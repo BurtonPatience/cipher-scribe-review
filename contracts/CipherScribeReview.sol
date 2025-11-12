@@ -44,6 +44,9 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
     /// @notice Mapping for approved reviewers
     mapping(address => bool) public approvedReviewers;
 
+    /// @notice Reviewer reputation scores (0-100 scale)
+    mapping(address => uint8) public reviewerReputation;
+
     /// @notice Emergency stop flag for critical situations
     bool public emergencyStop;
 
