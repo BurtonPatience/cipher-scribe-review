@@ -18,6 +18,8 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
         string title;
         string track;
         string category; // Research category (e.g., "Machine Learning", "Cryptography", "Systems")
+        string subCategory; // More specific sub-category
+        string keywords; // Research keywords
         string authorHash;
         euint32 encryptedSum;
         uint32 plainSum; // For local development
@@ -144,6 +146,8 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
         string calldata title,
         string calldata track,
         string calldata category,
+        string calldata subCategory,
+        string calldata keywords,
         string calldata authorHash
     ) external {
         require(!emergencyStop, "System under emergency stop");
@@ -155,12 +159,16 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
         require(bytes(title).length > 0 && bytes(title).length <= 200, "Title must be 1-200 characters");
         require(bytes(track).length > 0 && bytes(track).length <= 50, "Track must be 1-50 characters");
         require(bytes(category).length > 0 && bytes(category).length <= 50, "Category must be 1-50 characters");
+        require(bytes(subCategory).length <= 50, "Sub-category must be <= 50 characters");
+        require(bytes(keywords).length <= 100, "Keywords must be <= 100 characters");
         require(bytes(authorHash).length == 66, "Author hash must be valid 32-byte hex string");
 
         Paper storage paper = _papers[paperId];
         paper.title = title;
         paper.track = track;
         paper.category = category;
+        paper.subCategory = subCategory;
+        paper.keywords = keywords;
         paper.authorHash = authorHash;
         // Don't initialize encryptedSum here - will be initialized on first submit
         paper.reviewCount = 0;
