@@ -14,6 +14,10 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
  *         to obtain a decryptable handle for the average.
  */
 contract CipherScribeReview is Ownable, SepoliaConfig {
+    // Constants for review validation
+    uint8 constant MIN_REPUTATION_FOR_REVIEW = 10;
+    uint8 constant MAX_SCORE = 10;
+    uint8 constant MIN_SCORE = 0;
     struct Paper {
         string title;
         string track;
@@ -248,6 +252,11 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
 
         // Check if reviewer is approved
         require(approvedReviewers[msg.sender], "Reviewer not approved");
+        require(reviewerReputation[msg.sender] >= MIN_REPUTATION_FOR_REVIEW, "Insufficient reviewer reputation");
+
+        // Input validation for encrypted score
+        // Note: We can't validate the actual score value here due to FHE encryption
+        // Validation occurs in _clampScore function during decryption
 
         // Debug: check if user already submitted
         require(!reviewerHasSubmitted[paperId][msg.sender], "User already submitted");
