@@ -78,6 +78,9 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
     event PaperRegistered(bytes32 indexed paperId, string title, string track, string category);
     event PaperUpdated(bytes32 indexed paperId, string title, string track);
     event ScoreSubmitted(bytes32 indexed paperId, address indexed reviewer, uint32 reviewCount, uint64 timestamp);
+    event ReviewerApproved(address indexed reviewer, uint8 reputation);
+    event ReviewerRevoked(address indexed reviewer);
+    event ReviewerReputationUpdated(address indexed reviewer, uint8 oldReputation, uint8 newReputation);
     event FinalScorePrepared(bytes32 indexed paperId, address indexed requester);
     event TotalHandleShared(bytes32 indexed paperId, address indexed requester);
 
@@ -108,6 +111,44 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
     function deactivateEmergencyStop() external onlyOwner {
         emergencyStop = false;
         emit EmergencyStopDeactivated(msg.sender);
+    }
+
+    /// @notice Approve a reviewer for participation
+    /// @param reviewer Address of the reviewer to approve
+    /// @param initialReputation Initial reputation score for the reviewer
+    function approveReviewer(address reviewer, uint8 initialReputation) external onlyOwner {
+        require(reviewer != address(0), "Invalid reviewer address");
+        require(initialReputation <= 100, "Reputation must be <= 100");
+        require(!approvedReviewers[reviewer], "Reviewer already approved");
+
+        approvedReviewers[reviewer] = true;
+        reviewerReputation[reviewer] = initialReputation;
+
+        emit ReviewerApproved(reviewer, initialReputation);
+    }
+
+    /// @notice Revoke reviewer approval
+    /// @param reviewer Address of the reviewer to revoke
+    function revokeReviewer(address reviewer) external onlyOwner {
+        require(approvedReviewers[reviewer], "Reviewer not approved");
+
+        approvedReviewers[reviewer] = false;
+        // Keep reputation for potential future re-approval
+
+        emit ReviewerRevoked(reviewer);
+    }
+
+    /// @notice Update reviewer reputation
+    /// @param reviewer Address of the reviewer
+    /// @param newReputation New reputation score (0-100)
+    function updateReviewerReputation(address reviewer, uint8 newReputation) external onlyOwner {
+        require(approvedReviewers[reviewer], "Reviewer not approved");
+        require(newReputation <= 100, "Reputation must be <= 100");
+
+        uint8 oldReputation = reviewerReputation[reviewer];
+        reviewerReputation[reviewer] = newReputation;
+
+        emit ReviewerReputationUpdated(reviewer, oldReputation, newReputation);
     }
 
     /// @notice Get review statistics across all papers
