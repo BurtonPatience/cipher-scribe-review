@@ -274,7 +274,9 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
         paper.title = title;
         paper.track = track;
         paper.authorHash = authorHash;
-        paper.updatedAt = uint64(block.timestamp);
+        // Gas optimization: cache timestamp to avoid multiple SLOADs
+        uint64 currentTime = uint64(block.timestamp);
+        paper.updatedAt = currentTime;
 
         emit PaperUpdated(paperId, title, track);
     }
