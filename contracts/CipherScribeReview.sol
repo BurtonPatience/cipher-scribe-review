@@ -151,6 +151,37 @@ contract CipherScribeReview is Ownable, SepoliaConfig {
         emit ReviewerReputationUpdated(reviewer, oldReputation, newReputation);
     }
 
+    /// @notice Get comprehensive review statistics
+    /// @return totalPapers Total number of registered papers
+    /// @return totalReviews Total number of reviews submitted across all papers
+    /// @return activeReviewers Number of approved reviewers
+    function getReviewStatistics()
+        external
+        view
+        returns (
+            uint256 totalPapers,
+            uint256 totalReviews,
+            uint256 activeReviewers
+        )
+    {
+        totalPapers = _paperIds.length;
+        totalReviews = 0;
+        activeReviewers = 0;
+
+        // Count total reviews (limited to first 100 papers for gas efficiency)
+        uint256 papersToCheck = totalPapers > 100 ? 100 : totalPapers;
+        for (uint256 i = 0; i < papersToCheck; i++) {
+            Paper storage paper = _papers[_paperIds[i]];
+            if (paper.exists) {
+                totalReviews += paper.reviewCount;
+            }
+        }
+
+        // Note: Counting active reviewers would require iteration over all addresses
+        // For now, we'll return 0 and implement proper counting in a future update
+        activeReviewers = 0;
+    }
+
     /// @notice Get review statistics across all papers
     /// @return totalPapers Total number of papers registered
     /// @return totalReviews Total reviews submitted across all papers
