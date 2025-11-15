@@ -54,6 +54,19 @@ const config: HardhatUserConfig = {
       accounts: ["0x058952ecdb2662e608acc0e50fa5a720d559611140582663e2b36c0c425c21d3"],
       chainId: 11155111,
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      gasPrice: 20000000000, // 20 gwei for FHE operations
+    },
+    // Additional networks for broader deployment support
+    mainnet: {
+      accounts: ["0x058952ecdb2662e608acc0e50fa5a720d559611140582663e2b36c0c425c21d3"],
+      chainId: 1,
+      url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+    },
+    polygon: {
+      accounts: ["0x058952ecdb2662e608acc0e50fa5a720d559611140582663e2b36c0c425c21d3"],
+      chainId: 137,
+      url: "https://polygon-rpc.com",
+      gasPrice: 40000000000, // 40 gwei for Polygon
     },
   },
   paths: {
