@@ -123,3 +123,59 @@ export function validateReviewScore(score: number): { isValid: boolean; error?: 
   }
   return { isValid: true };
 }
+
+/**
+ * Format time duration for display
+ */
+export function formatTimeAgo(timestamp: number): string {
+  const now = Date.now() / 1000;
+  const diff = now - timestamp;
+
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+  if (diff < 2592000) return `${Math.floor(diff / 86400)} days ago`;
+
+  return new Date(timestamp * 1000).toLocaleDateString();
+}
+
+/**
+ * Calculate reviewer reputation level
+ */
+export function getReputationLevel(reputation: number): {
+  level: string;
+  color: string;
+  description: string;
+} {
+  if (reputation >= 90) {
+    return {
+      level: 'Expert',
+      color: 'text-green-600',
+      description: 'Highly experienced reviewer'
+    };
+  } else if (reputation >= 70) {
+    return {
+      level: 'Advanced',
+      color: 'text-blue-600',
+      description: 'Experienced reviewer'
+    };
+  } else if (reputation >= 50) {
+    return {
+      level: 'Intermediate',
+      color: 'text-yellow-600',
+      description: 'Developing reviewer'
+    };
+  } else if (reputation >= 25) {
+    return {
+      level: 'Novice',
+      color: 'text-orange-600',
+      description: 'New reviewer'
+    };
+  } else {
+    return {
+      level: 'Unrated',
+      color: 'text-gray-600',
+      description: 'Not yet rated'
+    };
+  }
+}
