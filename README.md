@@ -2,7 +2,7 @@
 
 ## 🌐 Live Demo & Video
 
-- **🚀 Live Application**: [https://cipher-scribe-eosin.vercel.app/](https://cipher-scribe-eosin.vercel.app/)
+- **🚀 Live Application**: [https://cipher-scribe-review-jcds.vercel.app/](https://cipher-scribe-review-jcds.vercel.app/)
 - **📹 Demo Video**: [https://github.com/BurtonPatience/cipher-scribe-review/blob/main/cipher.mp4](https://github.com/BurtonPatience/cipher-scribe-review/blob/main/cipher.mp4)
 
 Cipher Scribe is an end-to-end FHEVM showcase that mirrors a NeurIPS-style peer review committee.
